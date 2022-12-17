@@ -1,0 +1,15 @@
+app:
+  name: 'wallet'
+  version: '1.0.0'
+
+http:
+  port: '8080'
+
+logger:
+  log_level: 'debug'
+  rollbar_env: 'wallet'
+
+postgre:
+  Db_max: 2
+  url: 'postgres://postgres:12345@localhost:5432/postgres?sslmode=disable'
+
