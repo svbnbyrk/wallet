@@ -22,8 +22,8 @@ func NewTransactionRepository(pg *db.Postgres) *TransactionRepository {
 func (r *TransactionRepository) GetHistory(ctx context.Context) ([]entity.Transaction, error) {
 	//build sql string
 	sql, _, err := r.Builder.
-		Select("id ,currency, type, wallet_id, balance, amount, created_at").
-		From("transaction").
+		Select("id ,currency, transaction_type, wallet_id, balance, amount, created_at").
+		From("transactions").
 		ToSql()
 	if err != nil {
 		return nil, fmt.Errorf("TransactionRepo - GetHistory - r.Builder: %w", err)
@@ -58,7 +58,7 @@ func (r *TransactionRepository) Store(ctx context.Context, t entity.Transaction)
 	//build sql string
 	sql, args, err := r.Builder.
 		Insert("transactions").
-		Columns("currency, transactionType, wallet_id, balance, amount , created_at").
+		Columns("currency, transaction_type, wallet_id, balance, amount , created_at").
 		Values(t.Currency, t.TransactionType, t.WalletId, t.Balance, t.Amount, t.CreatedAt).
 		ToSql()
 	if err != nil {

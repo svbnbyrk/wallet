@@ -4,17 +4,15 @@ import (
 	"fmt"
 
 	"github.com/spf13/viper"
-
 )
 
 type (
 	// Config -.
 	Config struct {
-		App   `yaml:"app"`
-		HTTP  `yaml:"http"`
-		Log   `yaml:"logger"`
+		App     `yaml:"app"`
+		HTTP    `yaml:"http"`
+		Log     `yaml:"logger"`
 		Postgre `yaml:"postgre"`
-
 	}
 
 	// App -.
@@ -30,22 +28,20 @@ type (
 
 	// Log -.
 	Log struct {
-		Level string `env-required:"true" yaml:"log_level"   env:"LOG_LEVEL"`
+		Level string `env-required:"true" yaml:"log_level" env:"LOG_LEVEL"`
 	}
 
 	// Mongo
 	Postgre struct {
-		DbMax int    `env-required:"true" yaml:"Db_max" env:""`
-		URL     string `env-required:"true"                 env:"PG_URL"`
+		URL string `env-required:"true" env:"PG_URL"`
 	}
-
 )
 
 // NewConfig returns app config.
 func NewConfig() (*Config, error) {
 	cfg := &Config{}
 
-	viper.AddConfigPath("../../config/")
+	viper.AddConfigPath("./config/")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
 	viper.AutomaticEnv()

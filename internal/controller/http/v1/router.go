@@ -6,7 +6,8 @@ import (
 	"github.com/svbnbyrk/wallet/pkg/logger"
 )
 
-func NewRouter(handler *gin.Engine, l logger.Interface, tuc usecase.TransactionUsecase, uuc usecase.UserUsecase, wuc usecase.WalletUsecase) {
+// Create router
+func NewRouter(handler *gin.Engine, l logger.Interface, tuc usecase.Transaction, uuc usecase.User, wuc usecase.Wallet) {
 	// Options
 	handler.Use(gin.Logger())
 	handler.Use(gin.Recovery())

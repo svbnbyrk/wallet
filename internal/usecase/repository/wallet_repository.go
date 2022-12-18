@@ -24,8 +24,8 @@ func NewWalletRepository(pg *db.Postgres) *WalletRepository {
 func (r *WalletRepository) Get(ctx context.Context, id int64) (entity.Wallet, error) {
 	//build sql string
 	sql, args, err := r.Builder.
-		Select("*").
-		From("wallet").
+		Select("id, user_id, balance, currency").
+		From("wallets").
 		Where(sq.Eq{"id": id}).
 		ToSql()
 	if err != nil {
@@ -39,8 +39,7 @@ func (r *WalletRepository) Get(ctx context.Context, id int64) (entity.Wallet, er
 	}
 
 	e := entity.Wallet{}
-
-	err = row.Scan(&e.Currency, &e.Balance, &e.ID, &e.UserId)
+	err = row.Scan(&e.ID, &e.UserId, &e.Balance, &e.Currency)
 	if err != nil {
 		return entity.Wallet{}, fmt.Errorf("WalletRepository - Get - rows.Scan: %w", err)
 	}
@@ -73,7 +72,10 @@ func (r *WalletRepository) Update(ctx context.Context, t entity.Wallet) error {
 	//build sql string
 	sql, args, err := r.Builder.
 		Update("wallets").
-		Set("balance, user_id, currency", &t).
+		Set("balance", t.Balance).
+		Set("user_id", t.UserId).
+		Set("currency", t.Currency).
+		Where(sq.Eq{"id": t.ID}).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("WalletRepository - Update - r.Builder: %w", err)
@@ -82,7 +84,7 @@ func (r *WalletRepository) Update(ctx context.Context, t entity.Wallet) error {
 	//execute update command
 	_, err = r.Db.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return fmt.Errorf("WalletRepository - Update - r.Db.Exec: %w", err)
+		return fmt.Errorf("WalletRepository - Update - r.Db.ExecContext: %w", err)
 	}
 
 	return nil

@@ -29,8 +29,9 @@ func transaction(t *testing.T) (*usecase.TransactionUseCase, *MockTransactionRep
 
 	transaction := NewMockTransactionRepository(mockCtl)
 	wallet := NewMockWalletRepository(mockCtl)
+	exchange := NewMockExchangeRepository(mockCtl)
 
-	translation := usecase.NewTransactionUsecase(transaction, wallet)
+	translation := usecase.NewTransactionUseCase(transaction, wallet, exchange)
 
 	return translation, transaction, wallet
 }

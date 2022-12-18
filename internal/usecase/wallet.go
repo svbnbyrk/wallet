@@ -11,7 +11,7 @@ type WalletUseCase struct {
 	repo WalletRepository
 }
 
-func NewWalletUsecase(r WalletRepository) *WalletUseCase {
+func NewWalletUseCase(r WalletRepository) *WalletUseCase {
 	return &WalletUseCase{
 		repo: r,
 	}

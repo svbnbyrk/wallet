@@ -28,16 +28,17 @@ func Run(cfg *config.Config) {
 	defer pg.Close()
 
 	// Use case
-	transactionUseCase := usecase.NewTransactionUsecase(
+	transactionUseCase := usecase.NewTransactionUseCase(
 		repository.NewTransactionRepository(pg),
 		repository.NewWalletRepository(pg),
+		repository.NewExchangeRepository(pg),
 	)
 
-	userUseCase := usecase.NewUserUsecase(
+	userUseCase := usecase.NewUserUseCase(
 		repository.NewUserRepository(pg),
 	)
 
-	walletUseCase := usecase.NewWalletUsecase(
+	walletUseCase := usecase.NewWalletUseCase(
 		repository.NewWalletRepository(pg),
 	)
 

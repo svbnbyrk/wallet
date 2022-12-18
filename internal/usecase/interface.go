@@ -10,24 +10,24 @@ import (
 
 type (
 	// Transaction Usecase
-	TransactionUsecase interface {
+	Transaction interface {
 		History(context.Context) ([]entity.Transaction, error)
 		Post(context.Context, entity.Transaction) error
 	}
 
-	// TransactionRepo
+	// Transaction Repository
 	TransactionRepository interface {
 		Store(context.Context, entity.Transaction) error
 		GetHistory(context.Context) ([]entity.Transaction, error)
 	}
 
 	// Wallet Usecase
-	WalletUsecase interface {
+	Wallet interface {
 		Store(context.Context, entity.Wallet) error
 		GetWalletsbyUser(context.Context, int64) ([]entity.Wallet, error)
 	}
 
-	// WalletRepo
+	// Wallet Repository
 	WalletRepository interface {
 		Get(context.Context, int64) (entity.Wallet, error)
 		Store(context.Context, entity.Wallet) error
@@ -36,13 +36,18 @@ type (
 	}
 
 	// User Usecase
-	UserUsecase interface {
+	User interface {
 		Store(context.Context, entity.User) error
 	}
 
-	// UserRepo
+	// User Repository
 	UserRepository interface {
 		Store(context.Context, entity.User) error
 		Update(context.Context, entity.User) error
+	}
+
+	// Exchange repository
+	ExchangeRepository interface {
+		GetByCurrency(context.Context, string) (entity.Exchange, error)
 	}
 )

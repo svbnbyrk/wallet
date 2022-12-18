@@ -11,14 +11,14 @@ type UserUseCase struct {
 	repo UserRepository
 }
 
-func NewUserUsecase(r UserRepository) *UserUseCase {
+func NewUserUseCase(r UserRepository) *UserUseCase {
 	return &UserUseCase{
-		repo:   r,
+		repo: r,
 	}
 }
 
 // Store user
-func (uc *UserUseCase) Store(ctx context.Context, u entity.User )  error {
+func (uc *UserUseCase) Store(ctx context.Context, u entity.User) error {
 	err := uc.repo.Store(ctx, u)
 	if err != nil {
 		return fmt.Errorf("UserUseCase - Post - s.repo.Store: %w", err)

@@ -15,10 +15,10 @@ type Transaction struct {
 	//TODO ID
 	ID              int64           `json:"id"`
 	WalletId        int64           `json:"wallet_id" binding:"required"`
-	TransactionType TransactionType `json:"transactionType" binding:"required"`
+	TransactionType TransactionType `json:"transactionType" binding:"required,oneof=deposit withdraw"`
 	Amount          float64         `json:"amount" binding:"required"`
 	Balance         float64         `json:"balance" binding:"required"`
-	Currency        string          `json:"currency" binding:"required"`
+	Currency        string          `json:"currency" binding:"required,iso4217"`
 	CreatedAt       time.Time       `json:"created_at"`
 }
 

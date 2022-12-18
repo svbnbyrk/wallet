@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/svbnbyrk/wallet/internal/entity"
 )
@@ -10,12 +11,14 @@ import (
 type TransactionUseCase struct {
 	tr TransactionRepository
 	wr WalletRepository
+	er ExchangeRepository
 }
 
-func NewTransactionUsecase(t TransactionRepository, w WalletRepository) *TransactionUseCase {
+func NewTransactionUseCase(t TransactionRepository, w WalletRepository, e ExchangeRepository) *TransactionUseCase {
 	return &TransactionUseCase{
 		tr: t,
 		wr: w,
+		er: e,
 	}
 }
 
@@ -30,19 +33,33 @@ func (uc *TransactionUseCase) History(ctx context.Context) ([]entity.Transaction
 }
 
 func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) error {
+	var balance float64
+	//set amount
+	amount := u.Amount
+
 	wallet, err := uc.wr.Get(ctx, u.WalletId)
 	if err != nil {
 		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Get: %w", err)
 	}
 
-	var balance float64
-	//to do translate currenct of amount
-	var amount float64
+	transactionRate, err := uc.er.GetByCurrency(ctx, u.Currency)
+	if err != nil {
+		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Get: %w", err)
+	}
+
+	walletRate, err := uc.er.GetByCurrency(ctx, wallet.Currency)
+	if err != nil {
+		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Get: %w", err)
+	}
+
+	if u.Currency != wallet.Currency {
+		amount = amount * (walletRate.Rate / transactionRate.Rate)
+	}
 
 	switch u.TransactionType {
 	case "deposit":
 		balance = wallet.Balance - amount
-	case "withdrawal":
+	case "withdraw":
 		balance = wallet.Balance + amount
 	}
 
@@ -57,8 +74,9 @@ func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) er
 		WalletId:        u.WalletId,
 		TransactionType: u.TransactionType,
 		Currency:        u.Currency,
-		Amount:          amount,
+		Amount:          u.Amount,
 		Balance:         balance,
+		CreatedAt:       time.Now(),
 	}
 	err = uc.tr.Store(ctx, transaction)
 	if err != nil {
