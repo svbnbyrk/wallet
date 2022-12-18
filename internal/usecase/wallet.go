@@ -21,7 +21,7 @@ func NewWalletUseCase(r WalletRepository) *WalletUseCase {
 func (uc *WalletUseCase) Store(ctx context.Context, u entity.Wallet) error {
 	err := uc.repo.Store(ctx, u)
 	if err != nil {
-		return fmt.Errorf("WalletUseCase - Post - s.repo.Store: %w", err)
+		return fmt.Errorf("WalletUseCase - Post - uc.repo.Store: %w", err)
 	}
 
 	return nil
@@ -30,7 +30,7 @@ func (uc *WalletUseCase) Store(ctx context.Context, u entity.Wallet) error {
 func (uc *WalletUseCase) GetWalletsbyUser(ctx context.Context, id int64) ([]entity.Wallet, error) {
 	wallets, err := uc.repo.GetbyUserId(ctx, id)
 	if err != nil {
-		return nil, fmt.Errorf("TransactionUseCase - GetWalletsbyUser - s.repo.GetHistory: %w", err)
+		return nil, fmt.Errorf("WalletUseCase - GetWalletsbyUser - uc.repo.GetbyUserId: %w", err)
 	}
 
 	return wallets, nil

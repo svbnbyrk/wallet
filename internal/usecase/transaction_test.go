@@ -21,7 +21,7 @@ type test struct {
 	err  error
 }
 
-func transaction(t *testing.T) (*usecase.TransactionUseCase, *MockTransactionRepository, *MockWalletRepository) {
+func transaction(t *testing.T) (*usecase.TransactionUseCase, *MockTransactionRepository, *MockWalletRepository, *MockExchangeRepository) {
 	t.Helper()
 
 	mockCtl := gomock.NewController(t)
@@ -33,19 +33,19 @@ func transaction(t *testing.T) (*usecase.TransactionUseCase, *MockTransactionRep
 
 	translation := usecase.NewTransactionUseCase(transaction, wallet, exchange)
 
-	return translation, transaction, wallet
+	return translation, transaction, wallet, exchange
 }
 
 func TestHistory(t *testing.T) {
 	t.Parallel()
 
-	transaction, repo, _ := transaction(t)
+	transactionUC, transactionRepo, _, _ := transaction(t)
 
 	tests := []test{
 		{
 			name: "empty result",
 			mock: func() {
-				repo.EXPECT().GetHistory(context.Background()).Return(nil, nil)
+				transactionRepo.EXPECT().GetHistory(context.Background()).Return(nil, nil)
 			},
 			res: []entity.Transaction(nil),
 			err: nil,
@@ -53,7 +53,7 @@ func TestHistory(t *testing.T) {
 		{
 			name: "result with error",
 			mock: func() {
-				repo.EXPECT().GetHistory(context.Background()).Return(nil, errInternalServErr)
+				transactionRepo.EXPECT().GetHistory(context.Background()).Return(nil, errInternalServErr)
 			},
 			res: []entity.Transaction(nil),
 			err: errInternalServErr,
@@ -68,7 +68,7 @@ func TestHistory(t *testing.T) {
 
 			tc.mock()
 
-			res, err := transaction.History(context.Background())
+			res, err := transactionUC.History(context.Background())
 
 			require.Equal(t, res, tc.res)
 			require.ErrorIs(t, err, tc.err)

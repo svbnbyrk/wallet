@@ -26,7 +26,7 @@ func NewTransactionUseCase(t TransactionRepository, w WalletRepository, e Exchan
 func (uc *TransactionUseCase) History(ctx context.Context) ([]entity.Transaction, error) {
 	transaction, err := uc.tr.GetHistory(ctx)
 	if err != nil {
-		return nil, fmt.Errorf("TransactionUseCase - History - s.repo.GetHistory: %w", err)
+		return nil, fmt.Errorf("TransactionUseCase - History - uc.tr.GetHistory: %w", err)
 	}
 
 	return transaction, nil
@@ -34,6 +34,7 @@ func (uc *TransactionUseCase) History(ctx context.Context) ([]entity.Transaction
 
 func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) error {
 	var balance float64
+
 	//set amount
 	amount := u.Amount
 
@@ -44,12 +45,12 @@ func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) er
 
 	transactionRate, err := uc.er.GetByCurrency(ctx, u.Currency)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Get: %w", err)
+		return fmt.Errorf("TransactionUseCase - Post - uc.er.GetByCurrency: %w", err)
 	}
 
 	walletRate, err := uc.er.GetByCurrency(ctx, wallet.Currency)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Get: %w", err)
+		return fmt.Errorf("TransactionUseCase - Post - uc.er.GetByCurrency: %w", err)
 	}
 
 	if u.Currency != wallet.Currency {
@@ -80,7 +81,7 @@ func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) er
 	}
 	err = uc.tr.Store(ctx, transaction)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Store: %w", err)
+		return fmt.Errorf("TransactionUseCase - Post - uc.tr.Store: %w", err)
 	}
 
 	return nil

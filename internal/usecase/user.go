@@ -21,7 +21,7 @@ func NewUserUseCase(r UserRepository) *UserUseCase {
 func (uc *UserUseCase) Store(ctx context.Context, u entity.User) error {
 	err := uc.repo.Store(ctx, u)
 	if err != nil {
-		return fmt.Errorf("UserUseCase - Post - s.repo.Store: %w", err)
+		return fmt.Errorf("UserUseCase - Post - uc.repo.Store: %w", err)
 	}
 
 	return nil
