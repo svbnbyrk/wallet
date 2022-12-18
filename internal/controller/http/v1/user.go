@@ -33,7 +33,7 @@ func (ur *userRoutes) post(c *gin.Context) {
 		for _, fieldErr := range err.(validator.ValidationErrors) {
 			errorResponse(c, http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
-		return
+
 	}
 	err := ur.uc.Store(c, us)
 	if err != nil {

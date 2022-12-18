@@ -38,8 +38,6 @@ INSERT INTO exchanges (currency, rate) VALUES('RUB', 66.907120956442);
 INSERT INTO exchanges (currency, rate) VALUES('GBP', 0.82089785506879);
 INSERT INTO exchanges (currency, rate) VALUES('CHF', 0.92960718755693);
 
-
-
 -- +goose StatementEnd
 
 -- +goose Down

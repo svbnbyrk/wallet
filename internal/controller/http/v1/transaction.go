@@ -58,7 +58,7 @@ type postRequest struct {
 func (tr *transactionRoutes) post(c *gin.Context) {
 	var pr postRequest
 	if err := c.ShouldBind(&pr); err != nil {
-		tr.l.Error(err, "http - v1 - history")
+		tr.l.Error(err, "http - v1 - post")
 		for _, fieldErr := range err.(validator.ValidationErrors) {
 			errorResponse(c, http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
@@ -69,7 +69,7 @@ func (tr *transactionRoutes) post(c *gin.Context) {
 	transaction := entity.NewTransaction(pr.WalletId, pr.TransactionType, pr.Currency, pr.Amount)
 	err := tr.uc.Post(c, transaction)
 	if err != nil {
-		tr.l.Error(err, "http - v1 - history")
+		tr.l.Error(err, "http - v1 - post")
 		errorResponse(c, http.StatusInternalServerError, "Unexpected Error")
 
 		return

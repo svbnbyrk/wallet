@@ -27,15 +27,23 @@ func newWalletRoutes(handler *gin.RouterGroup, t usecase.Wallet, l logger.Interf
 	handler.GET("user/:id/wallet", r.get)
 }
 
+type walletPostRequest struct {
+	UserId   int64  `json:"user_id"`
+	Currency string `json:"currency" binding:"required,iso4217"`
+	Balance  float64
+}
+
 func (ur *walletRoutes) post(c *gin.Context) {
-	var w entity.Wallet
+	var w walletPostRequest
 	if err := c.ShouldBind(&w); err != nil {
 		ur.l.Error(err, "http - v1 - shouldbind")
 		for _, fieldErr := range err.(validator.ValidationErrors) {
 			errorResponse(c, http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
 	}
-	err := ur.uc.Store(c, w)
+
+	wallet := entity.NewWallet(w.UserId, w.Currency, w.Balance)
+	err := ur.uc.Store(c, wallet)
 	if err != nil {
 		ur.l.Error(err, "http - v1 - store")
 		errorResponse(c, http.StatusInternalServerError, "Unexpected Error")

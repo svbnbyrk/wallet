@@ -20,10 +20,9 @@ import (
 func Run(cfg *config.Config) {
 	l := logger.New(cfg.Log.Level)
 
-	// Repository
 	pg, err := db.New(cfg.Postgre.URL)
 	if err != nil {
-		l.Fatal(fmt.Errorf("app - Run - postgres.New: %w", err))
+		l.Fatal(fmt.Errorf("app - Run - db.New: %w", err))
 	}
 	defer pg.Close()
 
