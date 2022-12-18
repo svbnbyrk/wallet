@@ -33,7 +33,7 @@ type (
 
 	// Mongo
 	Postgre struct {
-		URL string `env-required:"true" env:"PG_URL"`
+		URL string `env-required:"true" yaml:"url" env:"PG_URL"`
 	}
 )
 
