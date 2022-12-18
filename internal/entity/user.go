@@ -1,11 +1,14 @@
 package entity
 
-import (
-	"github.com/google/uuid"
-)
-
 type User struct {
-	Id    uuid.UUID `json:"id"`
+	ID    int64  `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+}
+
+func NewUser(name, email string) User {
+	return User{
+		Name:name,
+		Email:email,
+	}
 }

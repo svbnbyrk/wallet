@@ -2,25 +2,25 @@
 -- +goose StatementBegin
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-CREATE TABLE IF NOT EXISTS "transaction" (
-	id uuid DEFAULT uuid_generate_v4 (),
-	wallet_id uuid,
-	transaction_type INTEGER NOT NULL,
+CREATE TABLE IF NOT EXISTS transactions (
+	id SERIAL PRIMARY KEY,
+	wallet_id INTEGER,
+	transaction_type VARCHAR (255) NOT NULL,
 	currency VARCHAR (255) NOT NULL,
      balance DECIMAL,
      amount DECIMAL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS "user" (
-	id uuid DEFAULT uuid_generate_v4 (),
+CREATE TABLE IF NOT EXISTS users (
+	id  SERIAL PRIMARY KEY,
 	name VARCHAR (255),
 	email VARCHAR (255)
 );
 
-CREATE TABLE IF NOT EXISTS wallet (
-	id uuid DEFAULT uuid_generate_v4 (),
-	user_id uuid,
+CREATE TABLE IF NOT EXISTS wallets (
+	id  SERIAL PRIMARY KEY,
+	user_id INTEGER,
 	currency VARCHAR (255),
      balance DECIMAL
 );

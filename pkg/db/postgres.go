@@ -1,9 +1,9 @@
 package db
 
 import (
+	"embed"
 	"fmt"
 	"time"
-	"embed"
 
 	"database/sql"
 
@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	maxDbSize  = 1
+	maxDbSize    = 1
 	connAttempts = 10
 	connTimeout  = time.Second
 )
@@ -23,19 +23,19 @@ var embedMigrations embed.FS
 
 // Postgres
 type Postgres struct {
-	maxDbSize  int
+	maxDbSize    int
 	connAttempts int
 	connTimeout  time.Duration
 
 	Builder squirrel.StatementBuilderType
-	Db *sql.DB
+	Db      *sql.DB
 }
 
-// Db connection 
+// Db connection
 func New(url string) (*Postgres, error) {
 	var err error
 	pg := &Postgres{
-		maxDbSize:  maxDbSize,
+		maxDbSize:    maxDbSize,
 		connAttempts: connAttempts,
 		connTimeout:  connTimeout,
 	}
@@ -65,4 +65,3 @@ func (p *Postgres) Close() {
 		p.Db.Close()
 	}
 }
-

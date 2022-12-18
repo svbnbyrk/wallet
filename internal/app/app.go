@@ -1,11 +1,12 @@
 package app
 
 import (
-	"github.com/svbnbyrk/wallet/pkg/http"
 	"fmt"
 	"os"
 	"os/signal"
 	"syscall"
+
+	"github.com/svbnbyrk/wallet/pkg/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/svbnbyrk/wallet/config"
@@ -26,16 +27,23 @@ func Run(cfg *config.Config) {
 	}
 	defer pg.Close()
 
-	
 	// Use case
 	transactionUseCase := usecase.NewTransactionUsecase(
 		repository.NewTransactionRepository(pg),
 		repository.NewWalletRepository(pg),
 	)
 
+	userUseCase := usecase.NewUserUsecase(
+		repository.NewUserRepository(pg),
+	)
+
+	walletUseCase := usecase.NewWalletUsecase(
+		repository.NewWalletRepository(pg),
+	)
+
 	// HTTP Server
 	handler := gin.New()
-	v1.NewRouter(handler, l, transactionUseCase)
+	v1.NewRouter(handler, l, transactionUseCase, userUseCase, walletUseCase)
 	httpServer := http.New(handler)
 
 	// Waiting signal
