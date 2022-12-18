@@ -3,12 +3,10 @@ package usecase
 import (
 	"context"
 
-	"github.com/google/uuid"
-
 	"github.com/svbnbyrk/wallet/internal/entity"
 )
 
-//go:generate mockgen -source=interface.go -destination=./mocks/mocks_test.go -package=mocks_test
+//go:generate mockgen -source=interface.go -destination=./mocks_test.go -package=usecase_test
 
 type (
 	// Transaction Usecase
@@ -25,24 +23,26 @@ type (
 
 	// Wallet Usecase
 	WalletUsecase interface {
-		Store(context.Context,entity.Wallet ) 
+		Store(context.Context, entity.Wallet) error
+		GetWalletsbyUser(context.Context, int64) ([]entity.Wallet, error)
 	}
 
 	// WalletRepo
 	WalletRepository interface {
-		Get(context.Context, uuid.UUID) (*entity.Wallet, error)
+		Get(context.Context, int64) (entity.Wallet, error)
 		Store(context.Context, entity.Wallet) error
 		Update(context.Context, entity.Wallet) error
+		GetbyUserId(context.Context, int64) ([]entity.Wallet, error)
 	}
 
 	// User Usecase
 	UserUsecase interface {
-		Store(context.Context, entity.User ) 
+		Store(context.Context, entity.User) error
 	}
 
 	// UserRepo
 	UserRepository interface {
 		Store(context.Context, entity.User) error
-		Update(context.Context, entity.User)
+		Update(context.Context, entity.User) error
 	}
 )

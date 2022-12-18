@@ -36,13 +36,13 @@ func (r *TransactionRepository) GetHistory(ctx context.Context) ([]entity.Transa
 	}
 	defer rows.Close()
 
-	entities := make([]entity.Transaction, 0, _defaultEntityCap)
+	entities := make([]entity.Transaction, 0, 64)
 
 	//fill rows to entity
 	for rows.Next() {
 		e := entity.Transaction{}
 
-		err = rows.Scan(&e.Id, &e.Currency, &e.TransactionType, &e.WalletId, &e.Balance, &e.Amount, &e.CreatedAt)
+		err = rows.Scan(&e.ID, &e.Currency, &e.TransactionType, &e.WalletId, &e.Balance, &e.Amount, &e.CreatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("TransactionRepo - GetHistory - rows.Scan: %w", err)
 		}
@@ -57,7 +57,7 @@ func (r *TransactionRepository) GetHistory(ctx context.Context) ([]entity.Transa
 func (r *TransactionRepository) Store(ctx context.Context, t entity.Transaction) error {
 	//build sql string
 	sql, args, err := r.Builder.
-		Insert("transaction").
+		Insert("transactions").
 		Columns("currency, transactionType, wallet_id, balance, amount , created_at").
 		Values(t.Currency, t.TransactionType, t.WalletId, t.Balance, t.Amount, t.CreatedAt).
 		ToSql()

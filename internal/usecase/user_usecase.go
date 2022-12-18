@@ -17,7 +17,7 @@ func NewUserUsecase(r UserRepository) *UserUseCase {
 	}
 }
 
-// Store - Insert user
+// Store user
 func (uc *UserUseCase) Store(ctx context.Context, u entity.User )  error {
 	err := uc.repo.Store(ctx, u)
 	if err != nil {

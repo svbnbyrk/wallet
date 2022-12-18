@@ -30,27 +30,39 @@ func (uc *TransactionUseCase) History(ctx context.Context) ([]entity.Transaction
 }
 
 func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) error {
-	wallet, err := uc.wr.Get(ctx, u.WalletId )
+	wallet, err := uc.wr.Get(ctx, u.WalletId)
 	if err != nil {
 		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Get: %w", err)
 	}
 
 	var balance float64
 	//to do translate currenct of amount
-	var amount float64 
+	var amount float64
 
-	switch u.Type {
-	case 0:
+	switch u.TransactionType {
+	case "deposit":
 		balance = wallet.Balance - amount
-	case 1:
-		balance = wallet.Balance + amount 	
+	case "withdrawal":
+		balance = wallet.Balance + amount
 	}
 
 	wallet.Balance = balance
-	
-     err = uc.wr.Update(ctx, *wallet )
+
+	err = uc.wr.Update(ctx, wallet)
 	if err != nil {
 		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Update: %w", err)
+	}
+
+	transaction := entity.Transaction{
+		WalletId:        u.WalletId,
+		TransactionType: u.TransactionType,
+		Currency:        u.Currency,
+		Amount:          amount,
+		Balance:         balance,
+	}
+	err = uc.tr.Store(ctx, transaction)
+	if err != nil {
+		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Store: %w", err)
 	}
 
 	return nil

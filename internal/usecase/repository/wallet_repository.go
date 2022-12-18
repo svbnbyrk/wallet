@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/uuid"
-
 	sq "github.com/Masterminds/squirrel"
 	"github.com/svbnbyrk/wallet/internal/entity"
 	"github.com/svbnbyrk/wallet/pkg/db"
@@ -23,7 +21,7 @@ func NewWalletRepository(pg *db.Postgres) *WalletRepository {
 
 // Get wallet
 
-func (r *WalletRepository) Get(ctx context.Context, id uuid.UUID) (*entity.Wallet, error) {
+func (r *WalletRepository) Get(ctx context.Context, id int64) (entity.Wallet, error) {
 	//build sql string
 	sql, args, err := r.Builder.
 		Select("*").
@@ -31,32 +29,32 @@ func (r *WalletRepository) Get(ctx context.Context, id uuid.UUID) (*entity.Walle
 		Where(sq.Eq{"id": id}).
 		ToSql()
 	if err != nil {
-		return nil ,fmt.Errorf("WalletRepository - Get - r.Builder: %w", err)
+		return entity.Wallet{}, fmt.Errorf("WalletRepository - Get - r.Builder: %w", err)
 	}
 
 	//execute select query
 	row := r.Db.QueryRowContext(ctx, sql, args...)
 	if err != nil {
-		return nil ,fmt.Errorf("WalletRepository - Get - r.Db.QueryRow: %w", err)
+		return entity.Wallet{}, fmt.Errorf("WalletRepository - Get - r.Db.QueryRow: %w", err)
 	}
 
 	e := entity.Wallet{}
 
-	err = row.Scan(&e.Currency, &e.Balance, &e.Id, &e.UserId)
+	err = row.Scan(&e.Currency, &e.Balance, &e.ID, &e.UserId)
 	if err != nil {
-		return nil, fmt.Errorf("WalletRepository - Get - rows.Scan: %w", err)
+		return entity.Wallet{}, fmt.Errorf("WalletRepository - Get - rows.Scan: %w", err)
 	}
 
-	return &e, nil
+	return e, nil
 }
 
 // Insert wallet
 func (r *WalletRepository) Store(ctx context.Context, t entity.Wallet) error {
 	//build sql string
 	sql, args, err := r.Builder.
-		Insert("Wallet").
-		Columns("id, balance, user_id, currency").
-		Values(t.Id, t.Balance, t.Currency, t.UserId).
+		Insert("wallets").
+		Columns("balance, currency, user_id").
+		Values(t.Balance, t.Currency, t.UserId).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("WalletRepository - Store - r.Builder: %w", err)
@@ -74,7 +72,7 @@ func (r *WalletRepository) Store(ctx context.Context, t entity.Wallet) error {
 func (r *WalletRepository) Update(ctx context.Context, t entity.Wallet) error {
 	//build sql string
 	sql, args, err := r.Builder.
-		Update("Wallet").
+		Update("wallets").
 		Set("balance, user_id, currency", &t).
 		ToSql()
 	if err != nil {
@@ -88,4 +86,39 @@ func (r *WalletRepository) Update(ctx context.Context, t entity.Wallet) error {
 	}
 
 	return nil
+}
+
+func (r *WalletRepository) GetbyUserId(ctx context.Context, id int64) ([]entity.Wallet, error) {
+	//build sql string
+	sql, args, err := r.Builder.
+		Select("id, balance, currency, user_id").
+		From("wallets").
+		Where(sq.Eq{"user_id": id}).
+		ToSql()
+	if err != nil {
+		return nil, fmt.Errorf("WalletRepository - GetbyUserId - r.Builder: %w", err)
+	}
+
+	//execute select query
+	rows, err := r.Db.QueryContext(ctx, sql, args...)
+	if err != nil {
+		return nil, fmt.Errorf("WalletRepository - GetbyUserId - r.Db.QueryContext: %w", err)
+	}
+	defer rows.Close()
+
+	entities := make([]entity.Wallet, 0, 64)
+
+	//fill rows to entity
+	for rows.Next() {
+		e := entity.Wallet{}
+
+		err = rows.Scan(&e.ID, &e.Balance, &e.Currency, &e.UserId)
+		if err != nil {
+			return nil, fmt.Errorf("WalletRepository - GetbyUserId - rows.Scan: %w", err)
+		}
+
+		entities = append(entities, e)
+	}
+
+	return entities, nil
 }

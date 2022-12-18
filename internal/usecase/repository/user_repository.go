@@ -4,11 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/svbnbyrk/wallet/pkg/db"
 	"github.com/svbnbyrk/wallet/internal/entity"
+	"github.com/svbnbyrk/wallet/pkg/db"
 )
-
-const _defaultEntityCap = 64
 
 // UserRepo
 type UserRepository struct {
@@ -20,13 +18,13 @@ func NewUserRepository(pg *db.Postgres) *UserRepository {
 	return &UserRepository{pg}
 }
 
-// Insert user  
+// Insert user
 func (r *UserRepository) Store(ctx context.Context, t entity.User) error {
-	//build sql string 
+	//build sql string
 	sql, args, err := r.Builder.
-		Insert("User").
-		Columns("id, email, name").
-		Values(t.Id, t.Email, t.Name).
+		Insert("users").
+		Columns("email, name").
+		Values(t.Email, t.Name).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("UserRepository - Store - r.Builder: %w", err)
@@ -43,10 +41,10 @@ func (r *UserRepository) Store(ctx context.Context, t entity.User) error {
 
 // Update user
 func (r *UserRepository) Update(ctx context.Context, t entity.User) error {
-	//build sql string 
+	//build sql string
 	sql, args, err := r.Builder.
-		Update("User").
-		Set("email, name",&t).
+		Update("users").
+		Set("email, name", &t).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("UserRepository - Update - r.Builder: %w", err)
@@ -60,5 +58,3 @@ func (r *UserRepository) Update(ctx context.Context, t entity.User) error {
 
 	return nil
 }
-
-
