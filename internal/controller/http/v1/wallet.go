@@ -39,6 +39,7 @@ func (ur *walletRoutes) post(c *gin.Context) {
 		for _, fieldErr := range err.(validator.ValidationErrors) {
 			c.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
+		return
 	}
 
 	wallet := entity.NewWallet(w.UserId, w.Currency, w.Balance)

@@ -56,7 +56,6 @@ func (tr *transactionRoutes) post(c *gin.Context) {
 		for _, fieldErr := range err.(validator.ValidationErrors) {
 			c.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
-
 		return
 	}
 
