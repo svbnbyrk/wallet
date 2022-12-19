@@ -28,5 +28,6 @@ COPY --from=builder /app/server /app/server
 COPY --from=builder /app/config/config.yml /app/config/
 COPY --from=builder /app/pkg/db/migration/. /app/migration/
 
+EXPOSE 8080
 # Run the web service on container startup.
 ENTRYPOINT ["/app/server"]

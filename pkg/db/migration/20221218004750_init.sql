@@ -1,6 +1,5 @@
 -- +goose Up
 -- +goose StatementBegin
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS transactions (
 	id SERIAL PRIMARY KEY,

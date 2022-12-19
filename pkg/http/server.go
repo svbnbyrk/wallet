@@ -8,19 +8,19 @@ import (
 
 const (
 	readTimeout     = 5 * time.Second
-	writeTimeout   = 5 * time.Second
-	addr            = ":80"
+	writeTimeout    = 5 * time.Second
+	addr            = ":8080"
 	shutdownTimeout = 3 * time.Second
 )
 
-// Server 
+// Server
 type Server struct {
 	server          *http.Server
 	notify          chan error
 	shutdownTimeout time.Duration
 }
 
-// New 
+// New
 func New(handler http.Handler) *Server {
 	httpServer := &http.Server{
 		Handler:      handler,
