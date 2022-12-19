@@ -12,8 +12,6 @@ import (
 )
 
 func TestWallet_Store(t *testing.T) {
-	mockWalletRepo := new(mocks.WalletRepository)
-
 	mockWallet := entity.Wallet{
 		UserId:   1,
 		Balance:  1,
@@ -21,24 +19,33 @@ func TestWallet_Store(t *testing.T) {
 	}
 
 	t.Run("success", func(t *testing.T) {
+		mockWalletRepo := new(mocks.WalletRepository)
 		mockWalletRepo.On("Store", mock.Anything, mockWallet).Return(nil)
 
 		wuc := usecase.NewWalletUseCase(mockWalletRepo)
 
 		err := wuc.Store(context.Background(), mockWallet)
-		if err != nil {
-			println(err)
-		}
 
 		assert.NoError(t, err)
+
+		mockWalletRepo.AssertExpectations(t)
+	})
+
+	t.Run("error", func(t *testing.T) {
+		mockWalletRepo := new(mocks.WalletRepository)
+		mockWalletRepo.On("Store", mock.Anything, mockWallet).Return(entity.ErrInternalServerError)
+
+		wuc := usecase.NewWalletUseCase(mockWalletRepo)
+
+		err := wuc.Store(context.Background(), mockWallet)
+
+		assert.Error(t, err)
 
 		mockWalletRepo.AssertExpectations(t)
 	})
 }
 
 func TestWallet_GetWalletsbyUser(t *testing.T) {
-	mockWalletRepo := new(mocks.WalletRepository)
-
 	mockWallet := entity.Wallet{
 		UserId:   1,
 		Balance:  1,
@@ -49,6 +56,8 @@ func TestWallet_GetWalletsbyUser(t *testing.T) {
 	mockListWallet = append(mockListWallet, mockWallet)
 
 	t.Run("success", func(t *testing.T) {
+		mockWalletRepo := new(mocks.WalletRepository)
+
 		mockWalletRepo.On("GetWalletsByUser", mock.Anything, mock.AnythingOfType("int64")).Return(mockListWallet, nil).Once()
 
 		wuc := usecase.NewWalletUseCase(mockWalletRepo)

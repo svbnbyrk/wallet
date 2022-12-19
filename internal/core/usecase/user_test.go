@@ -12,24 +12,33 @@ import (
 )
 
 func TestUser_Store(t *testing.T) {
-	mockUserRepo := new(mocks.UserRepository)
-
 	mockUser := entity.User{
 		Name:  "John",
 		Email: "john@example.com",
 	}
 
 	t.Run("success", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
 		mockUserRepo.On("Store", mock.Anything, mockUser).Return(nil)
 
 		uuc := usecase.NewUserUseCase(mockUserRepo)
 
 		err := uuc.Store(context.Background(), mockUser)
-		if err != nil {
-			println(err)
-		}
 
 		assert.NoError(t, err)
+
+		mockUserRepo.AssertExpectations(t)
+	})
+
+	t.Run("error", func(t *testing.T) {
+		mockUserRepo := new(mocks.UserRepository)
+		mockUserRepo.On("Store", mock.Anything, mockUser).Return(entity.ErrInternalServerError)
+
+		uuc := usecase.NewUserUseCase(mockUserRepo)
+
+		err := uuc.Store(context.Background(), mockUser)
+
+		assert.Error(t, err)
 
 		mockUserRepo.AssertExpectations(t)
 	})
