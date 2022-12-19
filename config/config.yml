@@ -2,5 +2,5 @@ logger:
   log_level: 'debug'
 
 postgre:
-  url: 'postgres://wallet-user:12345@postgres:5432/postgres?sslmode=disable'
+  url: 'postgres://wallet-user:12345@localhost:5432/postgres?sslmode=disable'
 

@@ -23,7 +23,7 @@ func NewWalletRepository(pg *db.Postgres) *WalletRepository {
 
 func (r *WalletRepository) Get(ctx context.Context, id int64) (entity.Wallet, error) {
 	//build sql string
-	sql, args, err := r.Builder.
+	sq, args, err := r.Builder.
 		Select("id, user_id, balance, currency").
 		From("wallets").
 		Where(sq.Eq{"id": id}).
@@ -33,30 +33,31 @@ func (r *WalletRepository) Get(ctx context.Context, id int64) (entity.Wallet, er
 	}
 
 	//execute select query
-	row := r.Db.QueryRowContext(ctx, sql, args...)
+	row := r.Db.QueryRowContext(ctx, sq, args...)
 	if err != nil {
-		return entity.Wallet{}, fmt.Errorf("WalletRepository - Get - r.Db.QueryRow: %w", err)
+		return entity.Wallet{}, err
 	}
 
 	e := entity.Wallet{}
 	err = row.Scan(&e.ID, &e.UserId, &e.Balance, &e.Currency)
+
 	if err != nil {
-		return entity.Wallet{}, fmt.Errorf("WalletRepository - Get - rows.Scan: %w", err)
+		return entity.Wallet{}, err
 	}
 
 	return e, nil
 }
 
 // Insert wallet
-func (r *WalletRepository) Store(ctx context.Context, t entity.Wallet) error {
+func (r *WalletRepository) Store(ctx context.Context, w entity.Wallet) error {
 	//build sql string
 	sql, args, err := r.Builder.
 		Insert("wallets").
 		Columns("balance, currency, user_id").
-		Values(t.Balance, t.Currency, t.UserId).
+		Values(w.Balance, w.Currency, w.UserId).
 		ToSql()
 	if err != nil {
-		return fmt.Errorf("WalletRepository - Store - r.Builder: %w", err)
+		return err
 	}
 
 	//execute insert command
@@ -68,14 +69,14 @@ func (r *WalletRepository) Store(ctx context.Context, t entity.Wallet) error {
 	return nil
 }
 
-func (r *WalletRepository) Update(ctx context.Context, t entity.Wallet) error {
+func (r *WalletRepository) Update(ctx context.Context, w entity.Wallet) error {
 	//build sql string
 	sql, args, err := r.Builder.
 		Update("wallets").
-		Set("balance", t.Balance).
-		Set("user_id", t.UserId).
-		Set("currency", t.Currency).
-		Where(sq.Eq{"id": t.ID}).
+		Set("balance", w.Balance).
+		Set("user_id", w.UserId).
+		Set("currency", w.Currency).
+		Where(sq.Eq{"id": w.ID}).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("WalletRepository - Update - r.Builder: %w", err)

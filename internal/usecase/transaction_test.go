@@ -2,76 +2,46 @@ package usecase_test
 
 import (
 	"context"
-	"errors"
 	"testing"
 
-	"github.com/svbnbyrk/wallet/internal/entity"
-
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"github.com/svbnbyrk/wallet/internal/usecase"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/svbnbyrk/wallet/internal/entity"
+	"github.com/svbnbyrk/wallet/internal/usecase/mocks"
 )
 
-var errInternalServErr = errors.New("internal server error")
+func TestTransaction_History(t *testing.T) {
+	mockTransactionRepo := new(mocks.TransactionRepository)
+	mockWalletRepo := new(mocks.WalletRepository)
+	mockExchangeRepo := new(mocks.ExchangeRepository)
 
-type test struct {
-	name string
-	mock func()
-	res  interface{}
-	err  error
-}
-
-func transaction(t *testing.T) (*usecase.TransactionUseCase, *MockTransactionRepository, *MockWalletRepository, *MockExchangeRepository) {
-	t.Helper()
-
-	mockCtl := gomock.NewController(t)
-	defer mockCtl.Finish()
-
-	transaction := NewMockTransactionRepository(mockCtl)
-	wallet := NewMockWalletRepository(mockCtl)
-	exchange := NewMockExchangeRepository(mockCtl)
-
-	translation := usecase.NewTransactionUseCase(transaction, wallet, exchange)
-
-	return translation, transaction, wallet, exchange
-}
-
-func TestHistory(t *testing.T) {
-	t.Parallel()
-
-	transactionUC, transactionRepo, _, _ := transaction(t)
-
-	tests := []test{
-		{
-			name: "empty result",
-			mock: func() {
-				transactionRepo.EXPECT().GetHistory(context.Background()).Return(nil, nil)
-			},
-			res: []entity.Transaction(nil),
-			err: nil,
-		},
-		{
-			name: "result with error",
-			mock: func() {
-				transactionRepo.EXPECT().GetHistory(context.Background()).Return(nil, errInternalServErr)
-			},
-			res: []entity.Transaction(nil),
-			err: errInternalServErr,
-		},
+	mockTransaction := entity.Transaction{
+		WalletId:        1,
+		TransactionType: "deposit",
+		Currency:        "TRY",
+		Amount:          1,
 	}
 
-	for _, tc := range tests {
-		tc := tc
+	mockListTransaction := make([]entity.Transaction, 0)
+	mockListTransaction = append(mockListTransaction, mockTransaction)
 
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
+	t.Run("success", func(t *testing.T) {
+		mockTransactionRepo.On("GetHistory", mock.Anything).Return(mockListTransaction, nil)
 
-			tc.mock()
+		tuc := usecase.NewTransactionUseCase(mockTransactionRepo, mockWalletRepo, mockExchangeRepo)
 
-			res, err := transactionUC.History(context.Background())
+		ts, err := tuc.History(context.Background())
+		if err != nil {
+			println(err)
+		}
 
-			require.Equal(t, res, tc.res)
-			require.ErrorIs(t, err, tc.err)
-		})
-	}
+		assert.NoError(t, err)
+		assert.Len(t, ts, len(mockListTransaction))
+
+		mockTransactionRepo.AssertExpectations(t)
+		mockWalletRepo.AssertExpectations(t)
+		mockExchangeRepo.AssertExpectations(t)
+	})
 }

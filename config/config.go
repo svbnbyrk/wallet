@@ -28,7 +28,7 @@ type (
 func NewConfig() (*Config, error) {
 	cfg := &Config{}
 
-	viper.AddConfigPath("./config/")
+	viper.AddConfigPath("../../config/")
 	viper.SetConfigName("config")
 	viper.SetConfigType("yml")
 	viper.AutomaticEnv()

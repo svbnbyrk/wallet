@@ -6,48 +6,48 @@ import (
 	"github.com/svbnbyrk/wallet/internal/entity"
 )
 
-//go:generate mockgen -source=interface.go -destination=./mocks_test.go -package=usecase_test
+//go:generate mockgen mockery --all --keeptree
 
 type (
 	// Transaction Usecase
 	Transaction interface {
-		History(context.Context) ([]entity.Transaction, error)
-		Post(context.Context, entity.Transaction) error
+		History(ctx context.Context) ([]entity.Transaction, error)
+		Post(ctx context.Context, t entity.Transaction) error
 	}
 
 	// Transaction Repository
 	TransactionRepository interface {
-		Store(context.Context, entity.Transaction) error
-		GetHistory(context.Context) ([]entity.Transaction, error)
+		Store(ctx context.Context, t entity.Transaction) error
+		GetHistory(ctx context.Context) ([]entity.Transaction, error)
 	}
 
 	// Wallet Usecase
 	Wallet interface {
-		Store(context.Context, entity.Wallet) error
-		GetWalletsbyUser(context.Context, int64) ([]entity.Wallet, error)
+		Store(ctx context.Context, w entity.Wallet) error
+		GetWalletsbyUser(ctx context.Context, id int64) ([]entity.Wallet, error)
 	}
 
 	// Wallet Repository
 	WalletRepository interface {
-		Get(context.Context, int64) (entity.Wallet, error)
-		Store(context.Context, entity.Wallet) error
-		Update(context.Context, entity.Wallet) error
-		GetbyUserId(context.Context, int64) ([]entity.Wallet, error)
+		Get(ctx context.Context, id int64) (entity.Wallet, error)
+		Store(ctx context.Context, w entity.Wallet) error
+		Update(ctx context.Context, w entity.Wallet) error
+		GetbyUserId(ctx context.Context, id int64) ([]entity.Wallet, error)
 	}
 
 	// User Usecase
 	User interface {
-		Store(context.Context, entity.User) error
+		Store(ctx context.Context, u entity.User) error
 	}
 
 	// User Repository
 	UserRepository interface {
-		Store(context.Context, entity.User) error
-		Update(context.Context, entity.User) error
+		Store(ctx context.Context, u entity.User) error
+		Update(ctx context.Context, u entity.User) error
 	}
 
 	// Exchange repository
 	ExchangeRepository interface {
-		GetByCurrency(context.Context, string) (entity.Exchange, error)
+		GetByCurrency(ctx context.Context, currency string) (entity.Exchange, error)
 	}
 )

@@ -1,7 +1,6 @@
 package v1
 
 import (
-	"database/sql"
 	"fmt"
 	"net/http"
 
@@ -34,13 +33,9 @@ type historyResponse struct {
 
 func (tr *transactionRoutes) history(c *gin.Context) {
 	transactions, err := tr.uc.History(c.Request.Context())
-	if err == sql.ErrNoRows {
-		tr.l.Error(err, "http - v1 - history")
-		errorResponse(c, http.StatusNotFound, "Not Found")
-	}
 	if err != nil {
 		tr.l.Error(err, "http - v1 - history")
-		errorResponse(c, http.StatusInternalServerError, "Unexpected Error")
+		ErrorResponse(c, err)
 
 		return
 	}
@@ -60,7 +55,7 @@ func (tr *transactionRoutes) post(c *gin.Context) {
 	if err := c.ShouldBind(&pr); err != nil {
 		tr.l.Error(err, "http - v1 - post")
 		for _, fieldErr := range err.(validator.ValidationErrors) {
-			errorResponse(c, http.StatusBadRequest, fmt.Sprint(fieldErr))
+			c.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
 
 		return
@@ -70,7 +65,7 @@ func (tr *transactionRoutes) post(c *gin.Context) {
 	err := tr.uc.Post(c, transaction)
 	if err != nil {
 		tr.l.Error(err, "http - v1 - post")
-		errorResponse(c, http.StatusInternalServerError, "Unexpected Error")
+		ErrorResponse(c, err)
 
 		return
 	}

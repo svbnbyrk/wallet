@@ -26,13 +26,13 @@ func (r *TransactionRepository) GetHistory(ctx context.Context) ([]entity.Transa
 		From("transactions").
 		ToSql()
 	if err != nil {
-		return nil, fmt.Errorf("TransactionRepo - GetHistory - r.Builder: %w", err)
+		return nil, err
 	}
 
 	//execute sql query
 	rows, err := r.Db.QueryContext(ctx, sql)
 	if err != nil {
-		return nil, fmt.Errorf("TransactionRepo - GetHistory - r.Db.Query: %w", err)
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -44,7 +44,7 @@ func (r *TransactionRepository) GetHistory(ctx context.Context) ([]entity.Transa
 
 		err = rows.Scan(&e.ID, &e.Currency, &e.TransactionType, &e.WalletId, &e.Amount, &e.CreatedAt)
 		if err != nil {
-			return nil, fmt.Errorf("TransactionRepo - GetHistory - rows.Scan: %w", err)
+			return nil, err
 		}
 
 		entities = append(entities, e)

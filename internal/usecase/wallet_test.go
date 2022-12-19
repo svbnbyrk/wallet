@@ -4,61 +4,64 @@ import (
 	"context"
 	"testing"
 
-	"github.com/svbnbyrk/wallet/internal/entity"
-
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"github.com/svbnbyrk/wallet/internal/usecase"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/svbnbyrk/wallet/internal/entity"
+	"github.com/svbnbyrk/wallet/internal/usecase/mocks"
 )
 
-func wallet(t *testing.T) (*usecase.WalletUseCase, *MockWalletRepository) {
-	t.Helper()
+func TestWallet_Store(t *testing.T) {
+	mockWalletRepo := new(mocks.WalletRepository)
 
-	mockCtl := gomock.NewController(t)
-	defer mockCtl.Finish()
+	mockWallet := entity.Wallet{
+		UserId:   1,
+		Balance:  1,
+		Currency: "TRY",
+	}
 
-	wallet := NewMockWalletRepository(mockCtl)
+	t.Run("success", func(t *testing.T) {
+		mockWalletRepo.On("Store", mock.Anything, mockWallet).Return(nil)
 
-	walletUsecase := usecase.NewWalletUseCase(wallet)
+		wuc := usecase.NewWalletUseCase(mockWalletRepo)
 
-	return walletUsecase, wallet
+		err := wuc.Store(context.Background(), mockWallet)
+		if err != nil {
+			println(err)
+		}
+
+		assert.NoError(t, err)
+
+		mockWalletRepo.AssertExpectations(t)
+	})
 }
 
-func TestWalletStore(t *testing.T) {
-	t.Parallel()
+func TestWallet_GetWalletsbyUser(t *testing.T) {
+	mockWalletRepo := new(mocks.WalletRepository)
 
-	walletUc, walletRepo := wallet(t)
-
-	tests := []test{
-		{
-			name: "result with no error",
-			mock: func() {
-				walletRepo.EXPECT().Store(context.Background(), entity.Wallet{}).Return(nil)
-			},
-			res: nil,
-			err: nil,
-		},
-		{
-			name: "result with error",
-			mock: func() {
-				walletRepo.EXPECT().Store(context.Background(), entity.Wallet{}).Return(errInternalServErr)
-			},
-			res: entity.Wallet{},
-			err: errInternalServErr,
-		},
+	mockWallet := entity.Wallet{
+		UserId:   1,
+		Balance:  1,
+		Currency: "TRY",
 	}
 
-	for _, tc := range tests {
-		tc := tc
+	mockListWallet := make([]entity.Wallet, 0)
+	mockListWallet = append(mockListWallet, mockWallet)
 
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
+	t.Run("success", func(t *testing.T) {
+		mockWalletRepo.On("GetWalletsbyUser", mock.Anything, mock.AnythingOfType("int64")).Return(mockListWallet, nil)
 
-			tc.mock()
+		wuc := usecase.NewWalletUseCase(mockWalletRepo)
 
-			err := walletUc.Store(context.Background(), entity.Wallet{})
+		ws, err := wuc.GetWalletsbyUser(context.Background(), 1)
+		if err != nil {
+			println(err)
+		}
 
-			require.ErrorIs(t, err, tc.err)
-		})
-	}
+		assert.NoError(t, err)
+		assert.Len(t, ws, len(mockListWallet))
+
+		mockWalletRepo.AssertExpectations(t)
+	})
 }

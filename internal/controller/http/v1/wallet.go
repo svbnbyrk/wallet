@@ -38,7 +38,7 @@ func (ur *walletRoutes) post(c *gin.Context) {
 	if err := c.ShouldBind(&w); err != nil {
 		ur.l.Error(err, "http - v1 - shouldbind")
 		for _, fieldErr := range err.(validator.ValidationErrors) {
-			errorResponse(c, http.StatusBadRequest, fmt.Sprint(fieldErr))
+			c.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
 	}
 
@@ -46,7 +46,7 @@ func (ur *walletRoutes) post(c *gin.Context) {
 	err := ur.uc.Store(c, wallet)
 	if err != nil {
 		ur.l.Error(err, "http - v1 - store")
-		errorResponse(c, http.StatusInternalServerError, "Unexpected Error")
+		ErrorResponse(c, err)
 
 		return
 	}
@@ -61,14 +61,14 @@ func (ur *walletRoutes) get(c *gin.Context) {
 	id, err := strconv.Atoi(idString)
 	if err != nil {
 		ur.l.Error(err, "http - v1 - store")
-		errorResponse(c, http.StatusBadRequest, "Url parameter cannot parse")
+		ErrorResponse(c, err)
 
 		return
 	}
 	wallets, err := ur.uc.GetWalletsbyUser(c, int64(id))
 	if err != nil {
 		ur.l.Error(err, "http - v1 - store")
-		errorResponse(c, http.StatusInternalServerError, "Unexpected Error")
+		ErrorResponse(c, err)
 
 		return
 	}

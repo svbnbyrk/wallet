@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/svbnbyrk/wallet/internal/entity"
 )
@@ -21,7 +20,7 @@ func NewUserUseCase(r UserRepository) *UserUseCase {
 func (uc *UserUseCase) Store(ctx context.Context, u entity.User) error {
 	err := uc.repo.Store(ctx, u)
 	if err != nil {
-		return fmt.Errorf("UserUseCase - Post - uc.repo.Store: %w", err)
+		return err
 	}
 
 	return nil

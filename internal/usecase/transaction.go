@@ -25,6 +25,9 @@ func NewTransactionUseCase(t TransactionRepository, w WalletRepository, e Exchan
 // History - getting translate history from store.
 func (uc *TransactionUseCase) History(ctx context.Context) ([]entity.Transaction, error) {
 	transaction, err := uc.tr.GetHistory(ctx)
+	if transaction == nil {
+		return nil, entity.ErrNotFound
+	}
 	if err != nil {
 		return nil, fmt.Errorf("TransactionUseCase - History - uc.tr.GetHistory: %w", err)
 	}
@@ -40,17 +43,17 @@ func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) er
 
 	wallet, err := uc.wr.Get(ctx, u.WalletId)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Get: %w", err)
+		return err
 	}
 
 	transactionRate, err := uc.er.GetByCurrency(ctx, u.Currency)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.er.GetByCurrency: %w", err)
+		return err
 	}
 
 	walletRate, err := uc.er.GetByCurrency(ctx, wallet.Currency)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.er.GetByCurrency: %w", err)
+		return err
 	}
 
 	if u.Currency != wallet.Currency {
@@ -68,7 +71,7 @@ func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) er
 
 	err = uc.wr.Update(ctx, wallet)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.wr.Update: %w", err)
+		return err
 	}
 
 	transaction := entity.Transaction{
@@ -78,9 +81,10 @@ func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) er
 		Amount:          u.Amount,
 		CreatedAt:       time.Now(),
 	}
+
 	err = uc.tr.Store(ctx, transaction)
 	if err != nil {
-		return fmt.Errorf("TransactionUseCase - Post - uc.tr.Store: %w", err)
+		return err
 	}
 
 	return nil

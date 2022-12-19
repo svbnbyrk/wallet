@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"fmt"
+	"database/sql"
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/svbnbyrk/wallet/internal/entity"
@@ -22,27 +22,27 @@ func NewExchangeRepository(pg *db.Postgres) *ExchangeRepository {
 // Get Exchange
 
 func (r *ExchangeRepository) GetByCurrency(ctx context.Context, currency string) (entity.Exchange, error) {
-	//build sql string
-	sql, args, err := r.Builder.
+	//build sqlQuery string
+	sqlQuery, args, err := r.Builder.
 		Select("rate, currency").
 		From("exchanges").
 		Where(sq.Eq{"currency": currency}).
 		ToSql()
 	if err != nil {
-		return entity.Exchange{}, fmt.Errorf("ExchangeRepository - Get - r.Builder: %w", err)
+		return entity.Exchange{}, err
 	}
 
 	//execute select query
-	row := r.Db.QueryRowContext(ctx, sql, args...)
+	row := r.Db.QueryRowContext(ctx, sqlQuery, args...)
 	if err != nil {
-		return entity.Exchange{}, fmt.Errorf("ExchangeRepository - Get - r.Db.QueryRow: %w", err)
+		return entity.Exchange{}, err
 	}
 
 	e := entity.Exchange{}
 
 	err = row.Scan(&e.Rate, &e.Currency)
-	if err != nil {
-		return entity.Exchange{}, fmt.Errorf("ExchangeRepository - Get - rows.Scan: %w", err)
+	if err != nil && err != sql.ErrNoRows {
+		return entity.Exchange{}, err
 	}
 
 	return e, nil

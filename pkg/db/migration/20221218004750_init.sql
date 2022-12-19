@@ -1,14 +1,6 @@
 -- +goose Up
 -- +goose StatementBegin
 
-CREATE TABLE IF NOT EXISTS transactions (
-	id SERIAL PRIMARY KEY,
-	wallet_id INTEGER,
-	transaction_type VARCHAR (255) NOT NULL,
-	currency VARCHAR (255) NOT NULL,
-     amount DECIMAL,
-	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
 
 CREATE TABLE IF NOT EXISTS users (
 	id  SERIAL PRIMARY KEY,
@@ -18,10 +10,28 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS wallets (
 	id  SERIAL PRIMARY KEY,
-	user_id INTEGER UNIQUE,
+	user_id INTEGER,
 	currency VARCHAR (255),
-     balance DECIMAL
+     balance DECIMAL,
+     CONSTRAINT fk_wallets
+	FOREIGN KEY(user_id) 
+	REFERENCES users(id)
 );
+
+CREATE TABLE IF NOT EXISTS transactions (
+	id SERIAL PRIMARY KEY,
+	wallet_id INTEGER,
+	transaction_type VARCHAR (255) NOT NULL,
+	currency VARCHAR (255) NOT NULL,
+     amount DECIMAL,
+	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	CONSTRAINT fk_transactions
+	FOREIGN KEY(wallet_id) 
+	REFERENCES wallets(id)
+);
+
+
+
 
 CREATE TABLE IF NOT EXISTS exchanges (
 	id  SERIAL PRIMARY KEY,

@@ -4,61 +4,34 @@ import (
 	"context"
 	"testing"
 
-	"github.com/svbnbyrk/wallet/internal/entity"
-
-	"github.com/golang/mock/gomock"
-	"github.com/stretchr/testify/require"
 	"github.com/svbnbyrk/wallet/internal/usecase"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+	"github.com/svbnbyrk/wallet/internal/entity"
+	"github.com/svbnbyrk/wallet/internal/usecase/mocks"
 )
 
-func User(t *testing.T) (*usecase.UserUseCase, *MockUserRepository) {
-	t.Helper()
+func TestUser_Store(t *testing.T) {
+	mockUserRepo := new(mocks.UserRepository)
 
-	mockCtl := gomock.NewController(t)
-	defer mockCtl.Finish()
-
-	user := NewMockUserRepository(mockCtl)
-
-	userUsecase := usecase.NewUserUseCase(user)
-
-	return userUsecase, user
-}
-
-func TestUserStore(t *testing.T) {
-	t.Parallel()
-
-	userUc, userRepo := User(t)
-
-	tests := []test{
-		{
-			name: "result with no error",
-			mock: func() {
-				userRepo.EXPECT().Store(context.Background(), entity.User{}).Return(nil)
-			},
-			res: nil,
-			err: nil,
-		},
-		{
-			name: "result with error",
-			mock: func() {
-				userRepo.EXPECT().Store(context.Background(), entity.User{}).Return(errInternalServErr)
-			},
-			res: entity.User{},
-			err: errInternalServErr,
-		},
+	mockUser := entity.User{
+		Name:  "John",
+		Email: "john@example.com",
 	}
 
-	for _, tc := range tests {
-		tc := tc
+	t.Run("success", func(t *testing.T) {
+		mockUserRepo.On("Store", mock.Anything, mockUser).Return(nil)
 
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
+		uuc := usecase.NewUserUseCase(mockUserRepo)
 
-			tc.mock()
+		err := uuc.Store(context.Background(), mockUser)
+		if err != nil {
+			println(err)
+		}
 
-			err := userUc.Store(context.Background(), entity.User{})
+		assert.NoError(t, err)
 
-			require.ErrorIs(t, err, tc.err)
-		})
-	}
+		mockUserRepo.AssertExpectations(t)
+	})
 }

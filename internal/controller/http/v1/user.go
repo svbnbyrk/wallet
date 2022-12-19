@@ -31,15 +31,14 @@ func (ur *userRoutes) post(c *gin.Context) {
 	if err := c.ShouldBind(&us); err != nil {
 		ur.l.Error(err, "http - v1 - shouldbind")
 		for _, fieldErr := range err.(validator.ValidationErrors) {
-			errorResponse(c, http.StatusBadRequest, fmt.Sprint(fieldErr))
+			c.AbortWithStatusJSON(http.StatusBadRequest, fmt.Sprint(fieldErr))
 		}
 
 	}
 	err := ur.uc.Store(c, us)
 	if err != nil {
 		ur.l.Error(err, "http - v1 - store")
-		errorResponse(c, http.StatusInternalServerError, "Unexpected Error")
-
+		ErrorResponse(c, err)
 		return
 	}
 }

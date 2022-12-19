@@ -19,12 +19,12 @@ func NewUserRepository(pg *db.Postgres) *UserRepository {
 }
 
 // Insert user
-func (r *UserRepository) Store(ctx context.Context, t entity.User) error {
+func (r *UserRepository) Store(ctx context.Context, u entity.User) error {
 	//build sql string
 	sql, args, err := r.Builder.
 		Insert("users").
 		Columns("email, name").
-		Values(t.Email, t.Name).
+		Values(u.Email, u.Name).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("UserRepository - Store - r.Builder: %w", err)
@@ -40,20 +40,20 @@ func (r *UserRepository) Store(ctx context.Context, t entity.User) error {
 }
 
 // Update user
-func (r *UserRepository) Update(ctx context.Context, t entity.User) error {
+func (r *UserRepository) Update(ctx context.Context, u entity.User) error {
 	//build sql string
 	sql, args, err := r.Builder.
 		Update("users").
-		Set("email, name", &t).
+		Set("email, name", &u).
 		ToSql()
 	if err != nil {
-		return fmt.Errorf("UserRepository - Update - r.Builder: %w", err)
+		return err
 	}
 
 	//execute update command
 	_, err = r.Db.ExecContext(ctx, sql, args...)
 	if err != nil {
-		return fmt.Errorf("UserRepository - Update - r.Db.Exec: %w", err)
+		return err
 	}
 
 	return nil
