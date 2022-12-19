@@ -12,7 +12,7 @@ Flow of HTTP request in clean architecture at this service.
     HTTP < usecase
 ```
 
-Controller and Database are in the outer layer. They know nothing about each other. These two layers use `usecase` (business logic) to comminicate. 
+Controller and Database are in the outer layer. They know nothing about each other. These two layers use `usecase` (business logic) to comminicate. The business rules are not bound to the database.
 
 #### Wallet Service DB Diagram
 
@@ -64,7 +64,7 @@ Request model;
 
 ### `GET    http://localhost:8080/v1/user/:id/wallet`
 
-This endpoint get wallet from user id. 
+This endpoint get wallet by user id. 
 
 ### `POST   http://localhost:8080/v1/transaction`
 
@@ -86,7 +86,6 @@ Request model;
 
 This endpoint get all transaction history. 
 
-
 ## Project structure
 
 ### `cmd/wallet/main.go`
@@ -104,11 +103,18 @@ _Run_ function in the `app.go` file, which "continues" the _main_ function. This
 The Controller layer has handler, router. The structure of the business logic is injected into the router structure, which will be called by the handlers.
 
 ### `internal/entity`
-Entities of business logic (models) can be used in any layer.
+Interfaces and Entities of business logic (models) can be used in any layer.
 
-### `internal/usecase/repo`
+### `internal/entity/mocks` 
+The Mocks are generated to interface. I used [mockery](https://github.com/vektra/mockery).
+
+### `internal/core/repository`
 A repository is an abstract storage (database) that business logic works with.
 
+### `internal/core/usecase`
+Business logic and usecase tests.
 ### `pkg`
-The pkg folder has external package. Which is database, logger, httpserver.
+     The pkg folder has external package. Which is database(postgres), logger (zerolog), httpserver(gin) .
 
+### `pkg/db`
+The pkg folder has database.go for db configuration and migration folder. I manage to migration with [goose](https://github.com/pressly/goose) tool.
