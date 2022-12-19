@@ -7,10 +7,10 @@ import (
 )
 
 type UserUseCase struct {
-	repo UserRepository
+	repo entity.UserRepository
 }
 
-func NewUserUseCase(r UserRepository) *UserUseCase {
+func NewUserUseCase(r entity.UserRepository) *UserUseCase {
 	return &UserUseCase{
 		repo: r,
 	}

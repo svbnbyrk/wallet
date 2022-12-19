@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/svbnbyrk/wallet/config"
 	v1 "github.com/svbnbyrk/wallet/internal/controller/http/v1"
-	"github.com/svbnbyrk/wallet/internal/usecase"
-	"github.com/svbnbyrk/wallet/internal/usecase/repository"
+	"github.com/svbnbyrk/wallet/internal/core/repository"
+	"github.com/svbnbyrk/wallet/internal/core/usecase"
 	"github.com/svbnbyrk/wallet/pkg/db"
 	"github.com/svbnbyrk/wallet/pkg/logger"
 )

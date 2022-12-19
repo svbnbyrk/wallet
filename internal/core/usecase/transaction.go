@@ -8,12 +8,12 @@ import (
 )
 
 type TransactionUseCase struct {
-	tr TransactionRepository
-	wr WalletRepository
-	er ExchangeRepository
+	tr entity.TransactionRepository
+	wr entity.WalletRepository
+	er entity.ExchangeRepository
 }
 
-func NewTransactionUseCase(t TransactionRepository, w WalletRepository, e ExchangeRepository) *TransactionUseCase {
+func NewTransactionUseCase(t entity.TransactionRepository, w entity.WalletRepository, e entity.ExchangeRepository) *TransactionUseCase {
 	return &TransactionUseCase{
 		tr: t,
 		wr: w,

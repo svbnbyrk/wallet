@@ -4,12 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/svbnbyrk/wallet/internal/usecase"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/svbnbyrk/wallet/internal/core/usecase"
 	"github.com/svbnbyrk/wallet/internal/entity"
-	"github.com/svbnbyrk/wallet/internal/usecase/mocks"
+	"github.com/svbnbyrk/wallet/internal/entity/mocks"
 )
 
 func TestUser_Store(t *testing.T) {

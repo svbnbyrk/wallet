@@ -7,16 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/svbnbyrk/wallet/internal/entity"
-	"github.com/svbnbyrk/wallet/internal/usecase"
 	"github.com/svbnbyrk/wallet/pkg/logger"
 )
 
 type transactionRoutes struct {
-	uc usecase.Transaction
+	uc entity.TransactionUseCase
 	l  logger.Interface
 }
 
-func newTransactionRoutes(handler *gin.RouterGroup, t usecase.Transaction, l logger.Interface) {
+func newTransactionRoutes(handler *gin.RouterGroup, t entity.TransactionUseCase, l logger.Interface) {
 
 	r := &transactionRoutes{t, l}
 

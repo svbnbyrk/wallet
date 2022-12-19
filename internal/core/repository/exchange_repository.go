@@ -32,13 +32,12 @@ func (r *ExchangeRepository) GetByCurrency(ctx context.Context, currency string)
 		return entity.Exchange{}, err
 	}
 
+	e := entity.Exchange{}
 	//execute select query
 	row := r.Db.QueryRowContext(ctx, sqlQuery, args...)
 	if err != nil {
 		return entity.Exchange{}, err
 	}
-
-	e := entity.Exchange{}
 
 	err = row.Scan(&e.Rate, &e.Currency)
 	if err != nil && err != sql.ErrNoRows {

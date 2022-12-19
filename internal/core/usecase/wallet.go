@@ -7,10 +7,10 @@ import (
 )
 
 type WalletUseCase struct {
-	repo WalletRepository
+	repo entity.WalletRepository
 }
 
-func NewWalletUseCase(r WalletRepository) *WalletUseCase {
+func NewWalletUseCase(r entity.WalletRepository) *WalletUseCase {
 	return &WalletUseCase{
 		repo: r,
 	}
@@ -26,8 +26,8 @@ func (uc *WalletUseCase) Store(ctx context.Context, w entity.Wallet) error {
 	return nil
 }
 
-func (uc *WalletUseCase) GetWalletsbyUser(ctx context.Context, id int64) ([]entity.Wallet, error) {
-	wallets, err := uc.repo.GetbyUserId(ctx, id)
+func (uc *WalletUseCase) GetWalletsByUser(ctx context.Context, id int64) ([]entity.Wallet, error) {
+	wallets, err := uc.repo.GetWalletsByUser(ctx, id)
 	if err != nil {
 		return nil, err
 	}

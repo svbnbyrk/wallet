@@ -91,7 +91,7 @@ func (r *WalletRepository) Update(ctx context.Context, w entity.Wallet) error {
 	return nil
 }
 
-func (r *WalletRepository) GetbyUserId(ctx context.Context, id int64) ([]entity.Wallet, error) {
+func (r *WalletRepository) GetWalletsByUser(ctx context.Context, id int64) ([]entity.Wallet, error) {
 	//build sql string
 	sql, args, err := r.Builder.
 		Select("id, balance, currency, user_id").

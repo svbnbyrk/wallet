@@ -7,16 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/svbnbyrk/wallet/internal/entity"
-	"github.com/svbnbyrk/wallet/internal/usecase"
 	"github.com/svbnbyrk/wallet/pkg/logger"
 )
 
 type userRoutes struct {
-	uc usecase.User
+	uc entity.UserUseCase
 	l  logger.Interface
 }
 
-func newUserRoutes(handler *gin.RouterGroup, t usecase.User, l logger.Interface) {
+func newUserRoutes(handler *gin.RouterGroup, t entity.UserUseCase, l logger.Interface) {
 
 	r := &userRoutes{t, l}
 

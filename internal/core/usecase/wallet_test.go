@@ -4,12 +4,11 @@ import (
 	"context"
 	"testing"
 
-	"github.com/svbnbyrk/wallet/internal/usecase"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/svbnbyrk/wallet/internal/core/usecase"
 	"github.com/svbnbyrk/wallet/internal/entity"
-	"github.com/svbnbyrk/wallet/internal/usecase/mocks"
+	"github.com/svbnbyrk/wallet/internal/entity/mocks"
 )
 
 func TestWallet_Store(t *testing.T) {
@@ -50,12 +49,12 @@ func TestWallet_GetWalletsbyUser(t *testing.T) {
 	mockListWallet = append(mockListWallet, mockWallet)
 
 	t.Run("success", func(t *testing.T) {
-		mockWalletRepo.On("GetWalletsbyUser", mock.Anything, mock.AnythingOfType("int")).Return(mockListWallet, nil)
+		mockWalletRepo.On("GetWalletsByUser", mock.Anything, mock.AnythingOfType("int64")).Return(mockListWallet, nil).Once()
 
 		wuc := usecase.NewWalletUseCase(mockWalletRepo)
 
-		num := int(1)
-		ws, err := wuc.GetWalletsbyUser(context.Background(), num)
+		num := int64(1)
+		ws, err := wuc.GetWalletsByUser(context.Background(), num)
 
 		assert.NoError(t, err)
 		assert.Len(t, ws, len(mockListWallet))

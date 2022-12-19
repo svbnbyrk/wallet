@@ -8,16 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"github.com/svbnbyrk/wallet/internal/entity"
-	"github.com/svbnbyrk/wallet/internal/usecase"
 	"github.com/svbnbyrk/wallet/pkg/logger"
 )
 
 type walletRoutes struct {
-	uc usecase.Wallet
+	uc entity.WalletUseCase
 	l  logger.Interface
 }
 
-func newWalletRoutes(handler *gin.RouterGroup, t usecase.Wallet, l logger.Interface) {
+func newWalletRoutes(handler *gin.RouterGroup, t entity.WalletUseCase, l logger.Interface) {
 
 	r := &walletRoutes{t, l}
 	h := handler.Group("/wallet")
@@ -65,7 +64,7 @@ func (ur *walletRoutes) get(c *gin.Context) {
 
 		return
 	}
-	wallets, err := ur.uc.GetWalletsbyUser(c, int64(id))
+	wallets, err := ur.uc.GetWalletsByUser(c, int64(id))
 	if err != nil {
 		ur.l.Error(err, "http - v1 - store")
 		ErrorResponse(c, err)

@@ -35,8 +35,8 @@ func (_m *WalletRepository) Get(ctx context.Context, id int64) (entity.Wallet, e
 	return r0, r1
 }
 
-// GetbyUserId provides a mock function with given fields: ctx, id
-func (_m *WalletRepository) GetbyUserId(ctx context.Context, id int64) ([]entity.Wallet, error) {
+// GetWalletsByUser provides a mock function with given fields: ctx, id
+func (_m *WalletRepository) GetWalletsByUser(ctx context.Context, id int64) ([]entity.Wallet, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 []entity.Wallet

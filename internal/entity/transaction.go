@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"context"
 	"time"
 )
 
@@ -28,4 +29,15 @@ func NewTransaction(walletId int64, transactionType TransactionType, currency st
 		Currency:        currency,
 		Amount:          amount,
 	}
+}
+
+type TransactionUseCase interface {
+	History(ctx context.Context) ([]Transaction, error)
+	Post(ctx context.Context, t Transaction) error
+}
+
+// Transaction Repository
+type TransactionRepository interface {
+	Store(ctx context.Context, t Transaction) error
+	GetHistory(ctx context.Context) ([]Transaction, error)
 }
