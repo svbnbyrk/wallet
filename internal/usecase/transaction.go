@@ -2,7 +2,6 @@ package usecase
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/svbnbyrk/wallet/internal/entity"
@@ -29,7 +28,7 @@ func (uc *TransactionUseCase) History(ctx context.Context) ([]entity.Transaction
 		return nil, entity.ErrNotFound
 	}
 	if err != nil {
-		return nil, fmt.Errorf("TransactionUseCase - History - uc.tr.GetHistory: %w", err)
+		return nil, err
 	}
 
 	return transaction, nil

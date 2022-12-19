@@ -44,4 +44,22 @@ func TestTransaction_History(t *testing.T) {
 		mockWalletRepo.AssertExpectations(t)
 		mockExchangeRepo.AssertExpectations(t)
 	})
+
+	t.Run("error", func(t *testing.T) {
+		mockTransactionRepo.On("GetHistory", mock.Anything).Return(nil, nil)
+
+		tuc := usecase.NewTransactionUseCase(mockTransactionRepo, mockWalletRepo, mockExchangeRepo)
+
+		ts, err := tuc.History(context.Background())
+		if err != nil {
+			println(err)
+		}
+
+		assert.NoError(t, err)
+		assert.Equal(t, ts, nil)
+
+		mockTransactionRepo.AssertExpectations(t)
+		mockWalletRepo.AssertExpectations(t)
+		mockExchangeRepo.AssertExpectations(t)
+	})
 }

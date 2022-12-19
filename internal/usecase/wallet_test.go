@@ -50,14 +50,12 @@ func TestWallet_GetWalletsbyUser(t *testing.T) {
 	mockListWallet = append(mockListWallet, mockWallet)
 
 	t.Run("success", func(t *testing.T) {
-		mockWalletRepo.On("GetWalletsbyUser", mock.Anything, mock.AnythingOfType("int64")).Return(mockListWallet, nil)
+		mockWalletRepo.On("GetWalletsbyUser", mock.Anything, mock.AnythingOfType("int")).Return(mockListWallet, nil)
 
 		wuc := usecase.NewWalletUseCase(mockWalletRepo)
 
-		ws, err := wuc.GetWalletsbyUser(context.Background(), 1)
-		if err != nil {
-			println(err)
-		}
+		num := int(1)
+		ws, err := wuc.GetWalletsbyUser(context.Background(), num)
 
 		assert.NoError(t, err)
 		assert.Len(t, ws, len(mockListWallet))
