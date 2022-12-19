@@ -76,7 +76,6 @@ func (uc *TransactionUseCase) Post(ctx context.Context, u entity.Transaction) er
 		TransactionType: u.TransactionType,
 		Currency:        u.Currency,
 		Amount:          u.Amount,
-		Balance:         balance,
 		CreatedAt:       time.Now(),
 	}
 	err = uc.tr.Store(ctx, transaction)

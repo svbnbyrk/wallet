@@ -37,7 +37,7 @@ Then ready to GO.
 
 ## Endpoints
 
-### `POST   /v1/user`
+### `POST   http://localhost:8080/v1/user`
 This endpoint crate an user. 
 
 Request model;
@@ -49,7 +49,7 @@ Request model;
 }
 ```
 
-### `POST   /v1/wallet`
+### `POST   http://localhost:8080/v1/wallet`
 
 This endpoint crate a wallet. 
 
@@ -62,11 +62,11 @@ Request model;
 }
 ```
 
-### `GET    /v1/user/:id/wallet`
+### `GET    http://localhost:8080/v1/user/:id/wallet`
 
 This endpoint get wallet from user id. 
 
-### `POST   /v1/transaction`
+### `POST   http://localhost:8080/v1/transaction`
 
 This endpoint crate a deposit/withdraw transaction. 
 
@@ -82,7 +82,7 @@ Request model;
 
 ```
 
-### `GET    /v1/transaction/history`
+### `GET    http://localhost:8080/v1/transaction/history`
 
 This endpoint get all transaction history. 
 

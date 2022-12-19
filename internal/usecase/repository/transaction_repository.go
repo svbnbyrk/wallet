@@ -22,7 +22,7 @@ func NewTransactionRepository(pg *db.Postgres) *TransactionRepository {
 func (r *TransactionRepository) GetHistory(ctx context.Context) ([]entity.Transaction, error) {
 	//build sql string
 	sql, _, err := r.Builder.
-		Select("id ,currency, transaction_type, wallet_id, balance, amount, created_at").
+		Select("id ,currency, transaction_type, wallet_id, amount, created_at").
 		From("transactions").
 		ToSql()
 	if err != nil {
@@ -42,7 +42,7 @@ func (r *TransactionRepository) GetHistory(ctx context.Context) ([]entity.Transa
 	for rows.Next() {
 		e := entity.Transaction{}
 
-		err = rows.Scan(&e.ID, &e.Currency, &e.TransactionType, &e.WalletId, &e.Balance, &e.Amount, &e.CreatedAt)
+		err = rows.Scan(&e.ID, &e.Currency, &e.TransactionType, &e.WalletId, &e.Amount, &e.CreatedAt)
 		if err != nil {
 			return nil, fmt.Errorf("TransactionRepo - GetHistory - rows.Scan: %w", err)
 		}
@@ -58,8 +58,8 @@ func (r *TransactionRepository) Store(ctx context.Context, t entity.Transaction)
 	//build sql string
 	sql, args, err := r.Builder.
 		Insert("transactions").
-		Columns("currency, transaction_type, wallet_id, balance, amount , created_at").
-		Values(t.Currency, t.TransactionType, t.WalletId, t.Balance, t.Amount, t.CreatedAt).
+		Columns("currency, transaction_type, wallet_id, amount , created_at").
+		Values(t.Currency, t.TransactionType, t.WalletId, t.Amount, t.CreatedAt).
 		ToSql()
 	if err != nil {
 		return fmt.Errorf("TransactionRepo - Store - r.Builder: %w", err)

@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS transactions (
 	wallet_id INTEGER,
 	transaction_type VARCHAR (255) NOT NULL,
 	currency VARCHAR (255) NOT NULL,
-     balance DECIMAL,
      amount DECIMAL,
 	created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -19,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 CREATE TABLE IF NOT EXISTS wallets (
 	id  SERIAL PRIMARY KEY,
-	user_id INTEGER,
+	user_id INTEGER UNIQUE,
 	currency VARCHAR (255),
      balance DECIMAL
 );
