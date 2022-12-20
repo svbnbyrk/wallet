@@ -40,4 +40,5 @@ func (ur *userRoutes) post(c *gin.Context) {
 		ErrorResponse(c, err)
 		return
 	}
+	c.JSON(http.StatusCreated, nil)
 }
