@@ -113,8 +113,9 @@ A repository is an abstract storage (database) that business logic works with.
 
 ### `internal/core/usecase`
 Business logic and usecase tests.
+
 ### `pkg`
-     The pkg folder has external package. Which is database(postgres), logger (zerolog), httpserver(gin) .
+The pkg folder has external package. Which is database(postgres), logger (zerolog), httpserver(gin).
 
 ### `pkg/db`
 The pkg folder has database.go for db configuration and migration folder. I manage to migration with [goose](https://github.com/pressly/goose) tool.
