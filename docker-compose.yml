@@ -20,6 +20,7 @@ services:
     image: app
     environment:
       PG_URL: 'postgres://wallet-user:12345@postgres:5432/postgres'
+      GIN_MODE: release
     ports:
       - 8080:8080
     depends_on:

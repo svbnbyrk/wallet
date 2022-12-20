@@ -50,7 +50,7 @@ func (ur *walletRoutes) post(c *gin.Context) {
 
 		return
 	}
-	c.JSON(http.StatusCreated, nil)
+	c.Status(http.StatusCreated)
 }
 
 type walletsResponse struct {
