@@ -3,7 +3,7 @@ A mini wallet service project with Clean Architecture
 
 ![](https://blog.cleancoder.com/uncle-bob/images/2012-08-13-the-clean-architecture/CleanArchitecture.jpg)
 
-Flow of HTTP request in clean architecture at this service.
+Flow of HTTP request in clean architecture at wallet.
 
 ```
     HTTP > usecase
@@ -12,7 +12,7 @@ Flow of HTTP request in clean architecture at this service.
     HTTP < usecase
 ```
 
-Controller and Database are in the outer layer. They know nothing about each other. These two layers use `usecase` (business logic) to comminicate. The business rules are not bound to the database.
+Controller and Database don't know anything about each other. These two layers use usecase to communicate.
 
 #### Wallet Service DB Diagram
 
